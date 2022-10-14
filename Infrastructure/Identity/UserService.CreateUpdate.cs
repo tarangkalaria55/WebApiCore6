@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Web;
 using Application.Common.Exceptions;
 using Application.Common.Mailing;
 using Application.Identity;
@@ -22,13 +21,13 @@ internal partial class UserService
     /// </summary>
     public async Task<string> GetOrCreateFromPrincipalAsync(ClaimsPrincipal principal)
     {
-        string? objectId = principal.GetObjectId();
-        if (string.IsNullOrWhiteSpace(objectId))
+        string? userId = principal.GetUserId();
+        if (string.IsNullOrWhiteSpace(userId))
         {
             throw new InternalServerException(_localizer["Invalid objectId"]);
         }
 
-        var user = await _userManager.Users.Where(u => u.ObjectId == objectId).FirstOrDefaultAsync()
+        var user = await _userManager.Users.Where(u => u.Id == userId).FirstOrDefaultAsync()
             ?? await CreateOrUpdateFromPrincipalAsync(principal);
 
         if (principal.FindFirstValue(ClaimTypes.Role) is string role &&
@@ -51,7 +50,7 @@ internal partial class UserService
         }
 
         var user = await _userManager.FindByNameAsync(username);
-        if (user is not null && !string.IsNullOrWhiteSpace(user.ObjectId))
+        if (user is not null)
         {
             throw new InternalServerException(string.Format(_localizer["Username {0} is already taken."], username));
         }
@@ -59,7 +58,7 @@ internal partial class UserService
         if (user is null)
         {
             user = await _userManager.FindByEmailAsync(email);
-            if (user is not null && !string.IsNullOrWhiteSpace(user.ObjectId))
+            if (user is not null)
             {
                 throw new InternalServerException(string.Format(_localizer["Email {0} is already taken."], email));
             }
@@ -68,7 +67,6 @@ internal partial class UserService
         IdentityResult? result;
         if (user is not null)
         {
-            user.ObjectId = principal.GetObjectId();
             result = await _userManager.UpdateAsync(user);
 
             await _events.PublishAsync(new ApplicationUserUpdatedEvent(user.Id));
@@ -77,7 +75,6 @@ internal partial class UserService
         {
             user = new ApplicationUser
             {
-                ObjectId = principal.GetObjectId(),
                 FirstName = principal.FindFirstValue(ClaimTypes.GivenName),
                 LastName = principal.FindFirstValue(ClaimTypes.Surname),
                 Email = email,
@@ -123,7 +120,7 @@ internal partial class UserService
 
         var messages = new List<string> { string.Format(_localizer["User {0} Registered."], user.UserName) };
 
-        if (_securitySettings.RequireConfirmedAccount && !string.IsNullOrEmpty(user.Email))
+        if (!string.IsNullOrEmpty(user.Email))
         {
             // send verification email
             string emailVerificationUri = await GetEmailVerificationUriAsync(user, origin);

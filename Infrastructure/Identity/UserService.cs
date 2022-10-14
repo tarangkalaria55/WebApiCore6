@@ -30,7 +30,6 @@ internal partial class UserService : IUserService
     private readonly IJobService _jobService;
     private readonly IMailService _mailService;
     private readonly MailSettings _mailSettings;
-    private readonly SecuritySettings _securitySettings;
     private readonly IEmailTemplateService _templateService;
     private readonly IFileStorageService _fileStorage;
     private readonly IEventPublisher _events;
@@ -46,8 +45,7 @@ internal partial class UserService : IUserService
         IOptions<MailSettings> mailSettings,
         IEmailTemplateService templateService,
         IFileStorageService fileStorage,
-        IEventPublisher events,
-        IOptions<SecuritySettings> securitySettings)
+        IEventPublisher events)
     {
         _signInManager = signInManager;
         _userManager = userManager;
@@ -60,7 +58,6 @@ internal partial class UserService : IUserService
         _templateService = templateService;
         _fileStorage = fileStorage;
         _events = events;
-        _securitySettings = securitySettings.Value;
     }
 
     public async Task<PaginationResponse<UserDetailsDto>> SearchAsync(UserListFilter filter, CancellationToken cancellationToken)

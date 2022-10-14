@@ -12,9 +12,6 @@ public class ApplicationUserConfig : IEntityTypeConfiguration<ApplicationUser>
         builder
             .ToTable("Users", SchemaNames.Identity);
 
-        builder
-            .Property(u => u.ObjectId)
-                .HasMaxLength(256);
     }
 }
 

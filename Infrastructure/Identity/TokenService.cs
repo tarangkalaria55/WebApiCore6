@@ -20,19 +20,16 @@ internal class TokenService : ITokenService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IStringLocalizer<TokenService> _localizer;
-    private readonly SecuritySettings _securitySettings;
     private readonly JwtSettings _jwtSettings;
 
     public TokenService(
         UserManager<ApplicationUser> userManager,
         IOptions<JwtSettings> jwtSettings,
-        IStringLocalizer<TokenService> localizer,
-        IOptions<SecuritySettings> securitySettings)
+        IStringLocalizer<TokenService> localizer)
     {
         _userManager = userManager;
         _localizer = localizer;
         _jwtSettings = jwtSettings.Value;
-        _securitySettings = securitySettings.Value;
     }
 
     public async Task<TokenResponse> GetTokenAsync(TokenRequest request, string ipAddress, CancellationToken cancellationToken)
@@ -46,11 +43,6 @@ internal class TokenService : ITokenService
         if (!user.IsActive)
         {
             throw new UnauthorizedException(_localizer["identity.usernotactive"]);
-        }
-
-        if (_securitySettings.RequireConfirmedAccount && !user.EmailConfirmed)
-        {
-            throw new UnauthorizedException(_localizer["identity.emailnotconfirmed"]);
         }
 
         if (!await _userManager.CheckPasswordAsync(user, request.Password))

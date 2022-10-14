@@ -32,4 +32,5 @@ public static class ClaimsPrincipalExtensions
         principal is null
             ? throw new ArgumentNullException(nameof(principal))
             : principal.FindFirst(claimType)?.Value;
+    public static string? GetDisplayName(this ClaimsPrincipal principal) => principal.GetFullName();
 }
