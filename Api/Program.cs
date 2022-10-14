@@ -23,8 +23,8 @@ try
 
     builder.Services.AddControllers();
 
-    builder.Services.AddFluentValidationAutoValidation();
-    builder.Services.AddFluentValidationClientsideAdapters();
+    //builder.Services.AddFluentValidationAutoValidation();
+    //builder.Services.AddFluentValidationClientsideAdapters();
 
     builder.Services.AddInfrastructure(builder.Configuration);
     builder.Services.AddApplication();

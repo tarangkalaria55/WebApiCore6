@@ -5,6 +5,7 @@ using Application.Common.Interfaces;
 using Serilog;
 using Serilog.Context;
 using System.Net;
+using FluentValidation;
 
 namespace Infrastructure.Middleware;
 internal class ExceptionMiddleware : IMiddleware
@@ -65,6 +66,19 @@ internal class ExceptionMiddleware : IMiddleware
                     if (e.ErrorMessages is not null)
                     {
                         errorResult.Messages = e.ErrorMessages;
+                    }
+
+                    break;
+
+                case ValidationException e:
+                    response.StatusCode = errorResult.StatusCode = (int)HttpStatusCode.BadRequest;
+                    if (e.Errors is not null)
+                    {
+                        errorResult.Messages = e.Errors.Select(m => m.ErrorMessage).ToList();
+                        errorResult.Errors = e.Errors.GroupBy(x => x.PropertyName).ToDictionary(
+                          g => g.Key,
+                          g => g.Select(x => x.ErrorMessage).ToList()
+                        );
                     }
 
                     break;

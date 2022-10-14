@@ -1,3 +1,5 @@
+using System;
+
 namespace Application.Catalog.Brands;
 
 public class CreateBrandRequest : IRequest<Guid>
@@ -20,11 +22,15 @@ public class CreateBrandRequestHandler : IRequestHandler<CreateBrandRequest, Gui
 {
     // Add Domain Events automatically by using IRepositoryWithEvents
     private readonly IRepository<Brand> _repository;
+    private readonly IValidator<CreateBrandRequest> _validator;
 
-    public CreateBrandRequestHandler(IRepository<Brand> repository) => _repository = repository;
+    public CreateBrandRequestHandler(IValidator<CreateBrandRequest> validator, IRepository<Brand> repository) => (_validator, _repository) = (validator, repository);
 
     public async Task<Guid> Handle(CreateBrandRequest request, CancellationToken cancellationToken)
     {
+        ValidationResult result = await _validator.ValidateAsync(request);
+        if (!result.IsValid) throw new ValidationException(result.Errors);
+
         var brand = new Brand(request.Name, request.Description);
 
         await _repository.AddAsync(brand, cancellationToken);

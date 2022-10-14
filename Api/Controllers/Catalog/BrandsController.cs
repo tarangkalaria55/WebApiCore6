@@ -20,7 +20,8 @@ public class BrandsController : VersionedApiController
     }
 
     [HttpPost]
-    [MustHavePermission(FSHAction.Create, FSHResource.Brands)]
+    //[MustHavePermission(FSHAction.Create, FSHResource.Brands)]
+    [AllowAnonymous]
     [OpenApiOperation("Create a new brand.", "")]
     public Task<Guid> CreateAsync(CreateBrandRequest request)
     {
