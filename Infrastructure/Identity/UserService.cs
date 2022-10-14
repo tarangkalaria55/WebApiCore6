@@ -1,12 +1,10 @@
 using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
-
 using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
-using Application.Common.Caching;
 using Application.Common.Events;
 using Application.Common.Exceptions;
 using Application.Common.FileStorage;
@@ -36,8 +34,6 @@ internal partial class UserService : IUserService
     private readonly IEmailTemplateService _templateService;
     private readonly IFileStorageService _fileStorage;
     private readonly IEventPublisher _events;
-    private readonly ICacheService _cache;
-    private readonly ICacheKeyService _cacheKeys;
 
     public UserService(
         SignInManager<ApplicationUser> signInManager,
@@ -51,8 +47,6 @@ internal partial class UserService : IUserService
         IEmailTemplateService templateService,
         IFileStorageService fileStorage,
         IEventPublisher events,
-        ICacheService cache,
-        ICacheKeyService cacheKeys,
         IOptions<SecuritySettings> securitySettings)
     {
         _signInManager = signInManager;
@@ -66,8 +60,6 @@ internal partial class UserService : IUserService
         _templateService = templateService;
         _fileStorage = fileStorage;
         _events = events;
-        _cache = cache;
-        _cacheKeys = cacheKeys;
         _securitySettings = securitySettings.Value;
     }
 

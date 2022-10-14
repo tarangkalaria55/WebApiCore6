@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Infrastructure.Auth;
 using Infrastructure.BackgroundJobs;
-using Infrastructure.Caching;
 using Infrastructure.Common;
 using Infrastructure.Cors;
 using Infrastructure.FileStorage;
@@ -32,7 +31,6 @@ public static class Startup
             .AddApiVersioning()
             .AddAuth(config)
             .AddBackgroundJobs(config)
-            .AddCaching(config)
             .AddCorsPolicy(config)
             .AddExceptionMiddleware()
             .AddHealthCheck()

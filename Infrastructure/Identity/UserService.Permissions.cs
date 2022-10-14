@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Application.Common.Caching;
 using Application.Common.Exceptions;
 using Shared.Authorization;
 
@@ -29,14 +28,9 @@ internal partial class UserService
 
     public async Task<bool> HasPermissionAsync(string userId, string permission, CancellationToken cancellationToken)
     {
-        var permissions = await _cache.GetOrSetAsync(
-            _cacheKeys.GetCacheKey(FSHClaims.Permission, userId),
-            () => GetPermissionsAsync(userId, cancellationToken),
-            cancellationToken: cancellationToken);
+        var permissions = await GetPermissionsAsync(userId, cancellationToken);
 
         return permissions?.Contains(permission) ?? false;
     }
 
-    public Task InvalidatePermissionCacheAsync(string userId, CancellationToken cancellationToken) =>
-        _cache.RemoveAsync(_cacheKeys.GetCacheKey(FSHClaims.Permission, userId), cancellationToken);
 }
