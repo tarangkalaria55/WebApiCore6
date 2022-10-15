@@ -1,17 +1,19 @@
 using Application.Identity.Tokens;
 
 namespace Api.Controllers.Identity;
-public sealed class TokensController : VersionNeutralApiController
+public sealed class AuthController : VersionNeutralApiController
 {
     private readonly ITokenService _tokenService;
 
-    public TokensController(ITokenService tokenService) => _tokenService = tokenService;
+    public AuthController(ITokenService tokenService) => _tokenService = tokenService;
 
     [HttpPost]
     [AllowAnonymous]
     [OpenApiOperation("Request an access token using credentials.", "")]
-    public Task<TokenResponse> GetTokenAsync(TokenRequest request, CancellationToken cancellationToken)
+    public Task<TokenResponse> GetTokenAsync(CancellationToken cancellationToken)
     {
+        TokenRequest request = new TokenRequest("tkalaria16@gmail.com", "m00ns00n");
+
         return _tokenService.GetTokenAsync(request, GetIpAddress(), cancellationToken);
     }
 

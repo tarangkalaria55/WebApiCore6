@@ -11,8 +11,8 @@ internal static class Startup
 {
     internal static IServiceCollection AddJwtAuth(this IServiceCollection services, IConfiguration config)
     {
-        services.Configure<JwtSettings>(config.GetSection($"SecuritySettings:{nameof(JwtSettings)}"));
-        var jwtSettings = config.GetSection($"SecuritySettings:{nameof(JwtSettings)}").Get<JwtSettings>();
+        services.Configure<JwtSettings>(config.GetSection(nameof(JwtSettings)));
+        var jwtSettings = config.GetSection(nameof(JwtSettings)).Get<JwtSettings>();
         if (string.IsNullOrEmpty(jwtSettings.Key))
             throw new InvalidOperationException("No Key defined in JwtSettings config.");
         byte[] key = Encoding.ASCII.GetBytes(jwtSettings.Key);
