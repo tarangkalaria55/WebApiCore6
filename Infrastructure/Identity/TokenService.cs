@@ -138,7 +138,7 @@ internal class TokenService : ITokenService
         var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
         if (securityToken is not JwtSecurityToken jwtSecurityToken ||
             !jwtSecurityToken.Header.Alg.Equals(
-                SecurityAlgorithms.HmacSha256,
+                SecurityAlgorithms.HmacSha256Signature,
                 StringComparison.InvariantCultureIgnoreCase))
         {
             throw new UnauthorizedException(_localizer["identity.invalidtoken"]);
@@ -155,6 +155,6 @@ internal class TokenService : ITokenService
         }
 
         byte[] secret = Encoding.UTF8.GetBytes(_jwtSettings.Key);
-        return new SigningCredentials(new SymmetricSecurityKey(secret), SecurityAlgorithms.HmacSha256);
+        return new SigningCredentials(new SymmetricSecurityKey(secret), SecurityAlgorithms.HmacSha256Signature);
     }
 }
