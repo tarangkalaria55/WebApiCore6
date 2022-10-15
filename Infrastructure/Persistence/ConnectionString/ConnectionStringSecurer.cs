@@ -12,23 +12,14 @@ public class ConnectionStringSecurer : IConnectionStringSecurer
     public ConnectionStringSecurer(IOptions<DatabaseSettings> dbSettings) =>
         _dbSettings = dbSettings.Value;
 
-    public string? MakeSecure(string? connectionString, string? dbProvider)
+    public string? MakeSecure(string? connectionString)
     {
         if (connectionString == null || string.IsNullOrEmpty(connectionString))
         {
             return connectionString;
         }
 
-        if (string.IsNullOrWhiteSpace(dbProvider))
-        {
-            dbProvider = _dbSettings.DBProvider;
-        }
-
-        return dbProvider?.ToLower() switch
-        {
-            DbProviderKeys.SqlServer => MakeSecureSqlConnectionString(connectionString),
-            _ => connectionString
-        };
+        return MakeSecureSqlConnectionString(connectionString);
     }
 
     private string MakeSecureSqlConnectionString(string connectionString)

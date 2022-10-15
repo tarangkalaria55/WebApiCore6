@@ -16,21 +16,12 @@ internal class ConnectionStringValidator : IConnectionStringValidator
         _logger = logger;
     }
 
-    public bool TryValidate(string connectionString, string? dbProvider = null)
+    public bool TryValidate(string connectionString)
     {
-        if (string.IsNullOrWhiteSpace(dbProvider))
-        {
-            dbProvider = _dbSettings.DBProvider;
-        }
 
         try
         {
-            switch (dbProvider?.ToLowerInvariant())
-            {
-                case DbProviderKeys.SqlServer:
-                    var mssqlcs = new SqlConnectionStringBuilder(connectionString);
-                    break;
-            }
+            var mssqlcs = new SqlConnectionStringBuilder(connectionString);
 
             return true;
         }

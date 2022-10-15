@@ -25,18 +25,10 @@ internal static class Startup
             throw new InvalidOperationException("DB ConnectionString is not configured.");
         }
 
-        string? dbProvider = databaseSettings.DBProvider;
-        if (string.IsNullOrEmpty(dbProvider))
-        {
-            throw new InvalidOperationException("DB Provider is not configured.");
-        }
-
-        _logger.Information($"Current DB Provider : {dbProvider}");
-
         return services
             .Configure<DatabaseSettings>(config.GetSection(nameof(DatabaseSettings)))
 
-            .AddDbContext<ApplicationDbContext>(m => m.UseDatabase(dbProvider, rootConnectionString))
+            .AddDbContext<ApplicationDbContext>(m => m.UseDatabase(rootConnectionString))
 
             .AddTransient<IDatabaseInitializer, DatabaseInitializer>()
             .AddTransient<ApplicationDbInitializer>()
@@ -50,18 +42,10 @@ internal static class Startup
             .AddRepositories();
     }
 
-    internal static DbContextOptionsBuilder UseDatabase(this DbContextOptionsBuilder builder, string dbProvider, string connectionString)
+    internal static DbContextOptionsBuilder UseDatabase(this DbContextOptionsBuilder builder, string connectionString)
     {
-        switch (dbProvider.ToLowerInvariant())
-        {
-
-            case DbProviderKeys.SqlServer:
-                return builder.UseSqlServer(connectionString, e =>
+        return builder.UseSqlServer(connectionString, e =>
                      e.MigrationsAssembly("Migrators.MSSQL"));
-
-            default:
-                throw new InvalidOperationException($"DB Provider {dbProvider} is not supported.");
-        }
     }
 
     private static IServiceCollection AddRepositories(this IServiceCollection services)

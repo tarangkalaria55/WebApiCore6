@@ -38,13 +38,10 @@ internal static class Startup
         return services;
     }
 
-    private static IGlobalConfiguration UseDatabase(this IGlobalConfiguration hangfireConfig, string dbProvider, string connectionString, IConfiguration config) =>
-        dbProvider.ToLowerInvariant() switch
-        {
-            DbProviderKeys.SqlServer =>
-                hangfireConfig.UseSqlServerStorage(connectionString, config.GetSection("HangfireSettings:Storage:Options").Get<SqlServerStorageOptions>()),
-            _ => throw new Exception($"Hangfire Storage Provider {dbProvider} is not supported.")
-        };
+    private static IGlobalConfiguration UseDatabase(this IGlobalConfiguration hangfireConfig, string dbProvider, string connectionString, IConfiguration config)
+    {
+        return hangfireConfig.UseSqlServerStorage(connectionString, config.GetSection("HangfireSettings:Storage:Options").Get<SqlServerStorageOptions>());
+    }
 
     internal static IApplicationBuilder UseHangfireDashboard(this IApplicationBuilder app, IConfiguration config)
     {

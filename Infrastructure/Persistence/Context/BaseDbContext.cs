@@ -53,7 +53,7 @@ public abstract class BaseDbContext : IdentityDbContext<ApplicationUser, Applica
         // Or uncomment the next line if you want to see them in the console
         // optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);
 
-        optionsBuilder.UseDatabase(_dbSettings.DBProvider!, _dbSettings.ConnectionString!);
+        optionsBuilder.UseDatabase(_dbSettings.ConnectionString!);
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())

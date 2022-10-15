@@ -1,6 +1,5 @@
 {
   "DatabaseSettings": {
-    "DBProvider": "mssql",
     "ConnectionString": "Data Source=DESKTOP-BRPE7R0;Initial Catalog=ApiDb;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;"
   }
 }
